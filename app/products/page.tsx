@@ -7,12 +7,11 @@ const categoryNames = {
   BEER: "Beer",
   WINE: "Wine",
   SOFT_DRINK: "Soft drinks",
-  SPIRIT: "Spirits",
+  SPIRIT: "NATIONAL_ALCHOL",
 } as const;
 
 const errors = {
-  invalid:
-    "Enter a name, pick a category, and use a whole number of bottles per crate.",
+  invalid: "Enter a name, pick a category, and use a whole number of bottles per crate.",
   exists: "A product with that name already exists.",
 } as const;
 
@@ -26,9 +25,7 @@ export default async function ProductsPage({
     where: { active: true },
     orderBy: { name: "asc" },
   });
-  const categories = Object.keys(
-    categoryNames,
-  ) as (keyof typeof categoryNames)[];
+  const categories = Object.keys(categoryNames) as (keyof typeof categoryNames)[];
   const field = "w-full rounded border border-gray-300 p-2";
 
   return (
