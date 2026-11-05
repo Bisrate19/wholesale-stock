@@ -19,7 +19,11 @@ const products = [
 
 async function main() {
   for (const l of locations) {
-    await db.location.upsert({ where: { name: l.name }, update: {}, create: l });
+    await db.location.upsert({
+      where: { name: l.name },
+      update: {},
+      create: l,
+    });
   }
   for (const p of products) {
     await db.product.upsert({ where: { name: p.name }, update: {}, create: p });
