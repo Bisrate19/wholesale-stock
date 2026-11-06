@@ -7,13 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum ProductCategory {
-  WINE
-  BEER
-  SOFT_DRINK
-  SPIRIT
-}
-
 enum LocationType {
   WAREHOUSE
   SHOP
@@ -27,13 +20,22 @@ enum MovementType {
   ADJUSTMENT
 }
 
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  active    Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  products  Product[]
+}
+
 model Product {
   id              String          @id @default(cuid())
   name            String          @unique
-  category        ProductCategory
   bottlesPerCrate Int             @default(24)
   active          Boolean         @default(true)
   createdAt       DateTime        @default(now())
+  categoryId      String
+  category        Category        @relation(fields: [categoryId], references: [id])
   movements       StockMovement[]
   levels          StockLevel[]
 }

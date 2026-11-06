@@ -4,17 +4,26 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 
-const categories = ["BEER", "WINE", "SOFT_DRINK", "SPIRIT"] as const;
-type Category = (typeof categories)[number];
+export async function addCategory(formData: FormData) {
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) redirect("/products?error=invalid-category");
+
+  const exists = await db.category.findUnique({ where: { name } });
+  if (exists) redirect("/products?error=category-exists");
+
+  await db.category.create({ data: { name } });
+  revalidatePath("/products");
+  redirect("/products");
+}
 
 export async function addProduct(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
-  const category = String(formData.get("category") ?? "") as Category;
+  const categoryId = String(formData.get("categoryId") ?? "");
   const bottlesPerCrate = Number(formData.get("bottlesPerCrate"));
 
   if (
     !name ||
-    !categories.includes(category) ||
+    !categoryId ||
     !Number.isInteger(bottlesPerCrate) ||
     bottlesPerCrate < 1
   ) {
@@ -24,7 +33,7 @@ export async function addProduct(formData: FormData) {
   const exists = await db.product.findUnique({ where: { name } });
   if (exists) redirect("/products?error=exists");
 
-  await db.product.create({ data: { name, category, bottlesPerCrate } });
+  await db.product.create({ data: { name, categoryId, bottlesPerCrate } });
   revalidatePath("/products");
   redirect("/products");
 }

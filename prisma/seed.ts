@@ -8,14 +8,7 @@ const locations = [
   { name: "Wine car 2", type: "VEHICLE" },
 ] as const;
 
-const products = [
-  { name: "Red wine 75cl", category: "WINE", bottlesPerCrate: 12 },
-  { name: "White wine 75cl", category: "WINE", bottlesPerCrate: 12 },
-  { name: "Beer 33cl", category: "BEER", bottlesPerCrate: 24 },
-  { name: "Beer 50cl", category: "BEER", bottlesPerCrate: 20 },
-  { name: "Soft drink 30cl", category: "SOFT_DRINK", bottlesPerCrate: 24 },
-  { name: "Spirit 70cl", category: "SPIRIT", bottlesPerCrate: 12 },
-] as const;
+const categories = ["Beer", "Wine", "Soft drinks", "National alcohol"];
 
 async function main() {
   for (const l of locations) {
@@ -25,8 +18,8 @@ async function main() {
       create: l,
     });
   }
-  for (const p of products) {
-    await db.product.upsert({ where: { name: p.name }, update: {}, create: p });
+  for (const name of categories) {
+    await db.category.upsert({ where: { name }, update: {}, create: { name } });
   }
 }
 
